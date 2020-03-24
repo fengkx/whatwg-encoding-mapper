@@ -1,14 +1,14 @@
 {
-  "name": "whatwg-encoding",
-  "description": "Decode strings according to the WHATWG Encoding Standard",
+  "name": "whatwg-encoding-mapper",
+  "description": "Encoding mapper according to the WHATWG Encoding Standard",
   "keywords": [
     "encoding",
     "whatwg"
   ],
-  "version": "1.0.5",
-  "author": "Domenic Denicola <d@domenic.me> (https://domenic.me/)",
+  "version": "1.0.0",
+  "maintainers": ["fengkx"],
   "license": "MIT",
-  "repository": "jsdom/whatwg-encoding",
+  "repository": "https://github.com/fengkx/whatwg-encoding-mapper",
   "main": "lib/whatwg-encoding.js",
   "files": [
     "lib/"
@@ -18,12 +18,11 @@
     "lint": "eslint lib test",
     "prepare": "node scripts/update.js"
   },
-  "dependencies": {
-    "iconv-lite": "0.4.24"
-  },
+  "dependencies": {},
   "devDependencies": {
     "eslint": "^5.3.0",
-    "got": "^9.0.0",
+    "got": "^10.6.0",
+    "iconv-lite": "0.5.1",
     "mocha": "^5.2.0"
   }
 }
