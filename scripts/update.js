@@ -1,11 +1,11 @@
 "use strict";
-/* eslint-disable no-console, no-process-exit */
+/* eslint-disable no-console, no-process-exit, max-len */
 const fs = require("fs");
 const path = require("path");
 const iconvLite = require("iconv-lite");
 const got = require("got");
-
-got("https://encoding.spec.whatwg.org/encodings.json", { json: true }).then(({ body }) => {
+const { devDependencies } = require("../package.json");
+got("https://encoding.spec.whatwg.org/encodings.json").json().then(body => {
   const labelsToNames = {};
   const supportedNames = [];
   for (const entry of body) {
@@ -22,10 +22,10 @@ got("https://encoding.spec.whatwg.org/encodings.json", { json: true }).then(({ b
   const labelsToNamesOutput = JSON.stringify(labelsToNames, undefined, 2);
   fs.writeFileSync(path.resolve(__dirname, "../lib/labels-to-names.json"), labelsToNamesOutput);
 
-  const supportedNamesOutput = JSON.stringify(supportedNames, undefined, 2);
+  const supportedNamesOutput = JSON.stringify({ iconvLiteVersion: devDependencies["iconv-lite"], supportedNames }, undefined, 2);
   fs.writeFileSync(path.resolve(__dirname, "../lib/supported-names.json"), supportedNamesOutput);
 })
-.catch(e => {
-  console.error(e.stack);
-  process.exit(1);
-});
+  .catch(e => {
+    console.error(e.stack);
+    process.exit(1);
+  });

@@ -2,57 +2,6 @@
 const assert = require("assert");
 const whatwgEncoding = require("..");
 
-describe("decode", () => {
-  it("should decode BOM-less windows-1252", () => {
-    const buffer = new Buffer([0x80, 0x95]);
-    const string = whatwgEncoding.decode(buffer, "windows-1252");
-
-    assert.strictEqual(string, "€•");
-  });
-
-  it("should override when it sees a UTF-8 BOM", () => {
-    const buffer = new Buffer([0xEF, 0xBB, 0xBF, 0xE2, 0x82, 0xAC, 0xE2, 0x80, 0xA2]);
-    const string = whatwgEncoding.decode(buffer, "windows-1252");
-
-    assert.strictEqual(string, "€•");
-  });
-
-  it("should override when it sees a UTF-16LE BOM", () => {
-    const buffer = new Buffer([0xFF, 0xFE, 0xAC, 0x20, 0x22, 0x20]);
-    const string = whatwgEncoding.decode(buffer, "windows-1252");
-
-    assert.strictEqual(string, "€•");
-  });
-
-  it("should override when it sees a UTF-16BE BOM", () => {
-    const buffer = new Buffer([0xFE, 0xFF, 0x20, 0xAC, 0x20, 0x22]);
-    const string = whatwgEncoding.decode(buffer, "windows-1252");
-
-    assert.strictEqual(string, "€•");
-  });
-
-  it("should throw when given an invalid encoding name", () => {
-    assert.throws(() => whatwgEncoding.decode(new Buffer([]), "asdf"), RangeError);
-    assert.throws(() => whatwgEncoding.decode(new Buffer([]), "utf-8"), RangeError);
-    assert.throws(() => whatwgEncoding.decode(new Buffer([]), " UTF-8"), RangeError);
-    assert.throws(() => whatwgEncoding.decode(new Buffer([]), "UTF-32"), RangeError);
-  });
-
-  it("should throw when given an unsupported encoding name", () => {
-    assert.throws(() => whatwgEncoding.decode(new Buffer([]), "ISO-2022-JP"), RangeError);
-    assert.throws(() => whatwgEncoding.decode(new Buffer([]), "ISO-8859-8-I"), RangeError);
-    assert.throws(() => whatwgEncoding.decode(new Buffer([]), "replacement"), RangeError);
-    assert.throws(() => whatwgEncoding.decode(new Buffer([]), "x-mac-cyrillic"), RangeError);
-    assert.throws(() => whatwgEncoding.decode(new Buffer([]), "x-user-defined"), RangeError);
-  });
-
-  it("should throw when given an encoding label that is not a name", () => {
-    assert.throws(() => whatwgEncoding.decode(new Buffer([]), "ascii"), RangeError);
-    assert.throws(() => whatwgEncoding.decode(new Buffer([]), "latin1"), RangeError);
-    assert.throws(() => whatwgEncoding.decode(new Buffer([]), "iso88591"), RangeError);
-  });
-});
-
 describe("labelToName", () => {
   it("should return names for labels", () => {
     assert.strictEqual(whatwgEncoding.labelToName("ascii"), "windows-1252");
@@ -177,21 +126,21 @@ describe("isSupported", () => {
 
 describe("getBOMEncoding", () => {
   it("should return UTF-8 for a UTF-8 BOM", () => {
-    const buffer = new Buffer([0xEF, 0xBB, 0xBF, 0xE2, 0x82, 0xAC, 0xE2, 0x80, 0xA2]);
+    const buffer = Buffer.from([0xEF, 0xBB, 0xBF, 0xE2, 0x82, 0xAC, 0xE2, 0x80, 0xA2]);
     const encoding = whatwgEncoding.getBOMEncoding(buffer);
 
     assert.strictEqual(encoding, "UTF-8");
   });
 
   it("should return UTF-16LE for a UTF-16LE BOM", () => {
-    const buffer = new Buffer([0xFF, 0xFE, 0xAC, 0x20, 0x22, 0x20]);
+    const buffer = Buffer.from([0xFF, 0xFE, 0xAC, 0x20, 0x22, 0x20]);
     const encoding = whatwgEncoding.getBOMEncoding(buffer);
 
     assert.strictEqual(encoding, "UTF-16LE");
   });
 
   it("should return UTF-16BE for a UTF-16BE BOM", () => {
-    const buffer = new Buffer([0xFE, 0xFF, 0x20, 0xAC, 0x20, 0x22]);
+    const buffer = Buffer.from([0xFE, 0xFF, 0x20, 0xAC, 0x20, 0x22]);
     const encoding = whatwgEncoding.getBOMEncoding(buffer);
 
     assert.strictEqual(encoding, "UTF-16BE");
@@ -205,28 +154,28 @@ describe("getBOMEncoding", () => {
   });
 
   it("should return UTF-16LE for a UTF-32LE BOM", () => {
-    const buffer = new Buffer([0xFF, 0xFE, 0x00, 0x00]);
+    const buffer = Buffer.from([0xFF, 0xFE, 0x00, 0x00]);
     const encoding = whatwgEncoding.getBOMEncoding(buffer);
 
     assert.strictEqual(encoding, "UTF-16LE");
   });
 
   it("should return null for a UTF-32BE BOM", () => {
-    const buffer = new Buffer([0x00, 0x00, 0xFF, 0xFE]);
+    const buffer = Buffer.from([0x00, 0x00, 0xFF, 0xFE]);
     const encoding = whatwgEncoding.getBOMEncoding(buffer);
 
     assert.strictEqual(encoding, null);
   });
 
   it("should return null for an empty buffer", () => {
-    const buffer = new Buffer([]);
+    const buffer = Buffer.from([]);
     const encoding = whatwgEncoding.getBOMEncoding(buffer);
 
     assert.strictEqual(encoding, null);
   });
 
   it("should return null for a one-byte buffer", () => {
-    const buffer = new Buffer([0xFF]);
+    const buffer = Buffer.from([0xFF]);
     const encoding = whatwgEncoding.getBOMEncoding(buffer);
 
     assert.strictEqual(encoding, null);
