@@ -1,5 +1,11 @@
 # Encoding Map According to the WHATWG Encoding Standard
 
+[![NPM](https://nodei.co/npm/whatwg-encoding-mapper.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/whatwg-encoding-mapper/)
+
+```sh
+npm i whatwg-encoding-mapper
+```
+
 This package is a fork of [whatwg-encoding](https://github.com/jsdom/whatwg-encoding) which remove the `iconv-lite` and decode method. Only gave the mapping in the [Encoding Standard](https://encoding.spec.whatwg.org/).
 
 Data is from https://encoding.spec.whatwg.org/encodings.json
